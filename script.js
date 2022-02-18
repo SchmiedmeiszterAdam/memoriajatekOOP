@@ -1,7 +1,5 @@
 const meret = 4; //ennyi kártyával dolgozuk
 
-const kartyaTomb = []; //itt tárolom a kártya objektumokat
-const kepekTomb = []; //itt tárolom a képek elérési útját
 
 $(function () {
     new Jatek();
@@ -10,9 +8,12 @@ class Jatek {
     constructor() {
         let szuloElem = $("article"); //itt lesznek a kártyák
         let sablonElem = $(".kartya"); //ez a mintaelem, amit másolgatunk
+        this.kepekTomb = []
         this.kepekTombFeltoltese();
-        const jatekter = new Jatekter(szuloElem, sablonElem, kepekTomb);
-        const kivalsztottKartyak = []; //itt fogom tárolni a kiválsztott Kártyákat
+        this.kartyaTomb = []
+        //itt tárolom a kártya objektumokat
+        const jatekter = new Jatekter(szuloElem, sablonElem, this.kepekTomb, this.kartyaTomb);
+        this.kivalsztottKartyak = []; //itt fogom tárolni a kiválsztott Kártyákat
         //feliratkozunk a Kartya osztályban létrehozott *kartyaKattintas* eseményre
 
         $(window).on("kartyaKattintas", (event) => {
@@ -21,30 +22,28 @@ class Jatek {
                 return;
             }
             let kivalasztottKartya = "";
-            console.log(event.detail); //ezért kellett visszaadni az objektumot
-            kivalsztottKartyak.push(event.detail);
-            console.log(kivalsztottKartyak);
+            this.kivalsztottKartyak.push(event.detail);
             //ha már van két kártya a kiválasztottKártyák között
-            if (kivalsztottKartyak.length >= 2) {
+            if (this.kivalsztottKartyak.length >= 2) {
                 //Blokkolom az összes kártyát, azaz nem lesznek kattinthatóak
                 this.TriggerBlocked();
 
                 //ha egyenlő a két kártya
                 if (
-                    kivalsztottKartyak[0].fajlnev ==
-                    kivalsztottKartyak[1].fajlnev
+                    this.kivalsztottKartyak[0].fajlnev ==
+                    this.kivalsztottKartyak[1].fajlnev
                 ) {
                     //ürítsük ki a tömböt , miközben eltüntetjük a nyertes kártyákat
-                    while ((kivalasztottKartya = kivalsztottKartyak.pop())) {
+                    while ((kivalasztottKartya = this.kivalsztottKartyak.pop())) {
                         kivalasztottKartya.eltuntet();
                     }
                     TriggerUnBlocked(); //kiváltjuk a blokkolás eseményt
                 } else {
                     //ha  akét kártya nem egynelő, akkor foduljanak visszaadni
                     //késleltetve
-                    setTimeout(function () {
+                    setTimeout(() => {
                         while (
-                            (kivalasztottKartya = kivalsztottKartyak.pop())
+                            (kivalasztottKartya = this.kivalsztottKartyak.pop())
                         ) {
                             kivalasztottKartya.allapotValtozas();
                         }
@@ -63,11 +62,11 @@ class Jatek {
 
     kepekTombFeltoltese() {
         for (let index = 1; index <= meret; index++) {
-            kepekTomb.push("kepek/kep" + index + ".jpg");
-            kepekTomb.push("kepek/kep" + index + ".jpg");
+            this.kepekTomb.push("kepek/kep" + index + ".jpg");
+            this.kepekTomb.push("kepek/kep" + index + ".jpg");
         }
         //kepekTomb vélelten sorrendű keverése, a tesztelés idejére kikommentezzük
-        kepekTomb.sort((a, b) => {
+        this.kepekTomb.sort((a, b) => {
             return Math.random() - 0.5;
         });
     }

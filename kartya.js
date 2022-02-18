@@ -30,7 +30,6 @@ class Kartya {
         this.allapot = !this.allapot;
         if (this.allapot) {
             this.kepElem.attr("src", this.fajlnev);
-            console.log("this");
         } else {
             this.kepElem.attr("src", this.hatter);
         }
@@ -60,7 +59,7 @@ class Kartya {
 }
 
 class Jatekter {
-    constructor(szuloElem, sablonElem, kepekTomb) {
+    constructor(szuloElem, sablonElem, kepekTomb,kartyaTomb) {
         kepekTomb.forEach((element) => {
             let ujElem = sablonElem.clone().appendTo(szuloElem); //új elem létrehozása
             const kartya = new Kartya(element, ujElem); //Kártya osztály példányosítása
